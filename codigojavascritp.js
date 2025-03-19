@@ -1,55 +1,52 @@
-
-let titulo = document.querySelector('h1');
-titulo.innerHTML = 'Juego del numero secreto';
-let parrafo = document.querySelector('p');
-parrafo.innerHTML = 'Indica un numero del 1 al 10';
-let numeroSecreto = generarNumeroSecreto();
-let intentos = 0;
-//funcion 
-'Juego del numero secreto actualizado'
-function asignarTextoElemento(elemento,texto){
-    let elementoHTML = document.querySelector(elemento);
-    elementoHTML.innerHTML = texto; 
-}
-function verificarIntentodeUsuario(){
-    let numeroDeUsuario = parseInt(document.getElementById('valorUsuario').value);
-
-    if (numeroDeUsuario === numeroSecreto) {
-        asignarTextoElemento('p',`Acertaste el número en ${intentos} ${(intentos === 1) ? 'vez' : 'veces'}`);
-        document.getElementById('reiniciar').removeAttribute('disabled');
-    } else {
-        //El usuario no acertó.
-        if (numeroDeUsuario > numeroSecreto) {
-            asignarTextoElemento('p','El número secreto es menor');
-        } else {
-            asignarTextoElemento('p','El número secreto es mayor');
+let amigos = [];
+//funcion que agrega amigos 
+        function agregarAmigo() {
+            let input = document.getElementById("amigo");
+            let nombre = input.value.trim();
+            //se incrusta a la lista de amigos
+            let lista = document.getElementById("listaAmigos");
+// alerta por casillero vacio
+            if (nombre === "") {
+                alert("Por favor, introduce un nombre antes de añadir.");
+                return;
+            }
+//alerta por mismo nombre
+            if (amigos.includes(nombre)) {
+                alert("Este nombre ya ha sido agregado.");
+                return;
+            }
+//si no hay problema, alguno se introduce
+            amigos.push(nombre);
+            let li = document.createElement("li");
+            li.textContent = nombre;
+            lista.appendChild(li);
+            input.value = "";
         }
-        intentos++;
-        limpiarCaja();
-    }
-    return;
-}
-function limpiarCaja() {
-    document.querySelector('#valorUsuario').value = '';
-}
-function generarNumeroSecreto() {
-    return Math.floor(Math.random()*10)+1;
-}
-function condicionesIniciales() {
-    asignarTextoElemento('h1','Juego del número secreto!');
-    asignarTextoElemento('p',`Indica un número del 1 al 10`);
-    numeroSecreto = generarNumeroSecreto();
-    intentos = 1;
-    console.log(numeroSecreto);
-}
-function reiniciarJuego() {
-    //limpiar caja
-    limpiarCaja();
-    //Indicar mensaje de intervalo de números 
-    //Generar el número aleatorio
-    //Inicializar el número intentos
-    condicionesIniciales();
-    //Deshabilitar el botón de nuevo juego
-    document.querySelector('#reiniciar').setAttribute('disabled','true');
-    
-}
+
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function sortearAmigo() {
+            if (amigos.length < 2) {
+                alert("Se necesitan al menos dos participantes para el sorteo.");
+                return;
+            }
+
+            let sorteados = [...amigos];
+            do {
+                shuffle(sorteados);
+            } while (amigos.some((nombre, index) => nombre === sorteados[index]));
+
+            let resultadoLista = document.getElementById("resultado");
+            resultadoLista.innerHTML = "";
+
+            for (let i = 0; i < amigos.length; i++) {
+                let li = document.createElement("li");
+                li.textContent = `${amigos[i]} → ${sorteados[i]}`;
+                resultadoLista.appendChild(li);
+            }
+        }
